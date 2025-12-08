@@ -57,7 +57,7 @@ export function getContextSummary(): ContextSummary | null {
   const surroundingText = getSurrounding(editor)
   let mode: ModeHint = 'plain'
   const cursorLine = editor.selection.active.line
-  if (languageId === 'latex' || languageId === 'tex') {
+  if (languageId === 'latex' || languageId === 'tex' || languageId === 'bibtex') {
     mode = detectTexMode(editor.document.getText(), cursorLine)
   } else if (languageId === 'markdown' || languageId === 'rmarkdown' || languageId === 'quarto') {
     mode = detectMarkdownMode(editor.document.getText(), cursorLine)

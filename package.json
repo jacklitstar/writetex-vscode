@@ -10,8 +10,10 @@
     "Other"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onCommand:writetex.startServer",
-    "onCommand:writetex.stopServer"
+    "onCommand:writetex.stopServer",
+    "onCommand:writetex.grantCopilotAccess"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -23,6 +25,14 @@
       {
         "command": "writetex.stopServer",
         "title": "WriteTex: Stop OCR Server"
+      },
+      {
+        "command": "writetex.grantCopilotAccess",
+        "title": "WriteTex: Grant Copilot Access"
+      },
+      {
+        "command": "writetex.showCommands",
+        "title": "WriteTex: Show Actions"
       }
     ],
     "configuration": {
