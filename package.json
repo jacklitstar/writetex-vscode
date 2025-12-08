@@ -4,20 +4,67 @@
   "description": "Write LaTeX with AI powered OCR",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.106.1"
+    "vscode": "^1.104.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:writetex.startServer",
+    "onCommand:writetex.stopServer"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "writetex-vscode.helloWorld",
-        "title": "Hello World"
+        "command": "writetex.startServer",
+        "title": "WriteTex: Start OCR Server"
+      },
+      {
+        "command": "writetex.stopServer",
+        "title": "WriteTex: Stop OCR Server"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "WriteTex",
+      "properties": {
+        "writetex.port": {
+          "type": "number",
+          "default": 53421,
+          "description": "Port for the WriteTex OCR HTTP server"
+        },
+        "writetex.serviceName": {
+          "type": "string",
+          "default": "WriteTex VS Code",
+          "description": "mDNS service name advertised on the local network"
+        },
+        "writetex.contextLineRadius": {
+          "type": "number",
+          "default": 100,
+          "description": "Number of lines of context before/after the cursor to include"
+        },
+        "writetex.contextCharLimit": {
+          "type": "number",
+          "default": 4000,
+          "description": "Maximum characters of surrounding context to include in the prompt"
+        },
+        "writetex.requireToken": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require a shared token in requests for authentication"
+        },
+        "writetex.token": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Shared secret token required when `writetex.requireToken` is true"
+        },
+        "writetex.modelId": {
+          "type": "string",
+          "default": "copilot-gpt-4o",
+          "description": "Identifier for the Copilot model to use for vision OCR"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -27,8 +74,11 @@
     "lint": "eslint src",
     "test": "vscode-test"
   },
+  "dependencies": {
+    "bonjour-service": "^1.2.1"
+  },
   "devDependencies": {
-    "@types/vscode": "^1.106.1",
+    "@types/vscode": "^1.104.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "typescript-eslint": "^8.48.1",
