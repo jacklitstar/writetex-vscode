@@ -3,9 +3,6 @@
 import * as vscode from 'vscode';
 import { startServer } from './server';
 import { advertise, MdnsHandle } from './mdns';
-import { getContextSummary } from './context';
-import { performOcr } from './ai';
-import { insertOrClipboard } from './insert';
 import { WriteTexSettings } from './types';
 
 let controller: { stop: () => Promise<void> } | null = null
@@ -52,25 +49,12 @@ async function start(context: vscode.ExtensionContext) {
   }
   // Validate API configuration
   if (!settings.apiKey || settings.apiKey.trim() === '') {
-    vscode.window.showWarningMessage('WriteTex: API key not configured. Please set writetex.apiKey in settings.')
+    vscode.window.showWarningMessage('WriteTex: API key not configured. Please set writetex.apiKey in settings.');
   }
-  const handler = async (body: { imageBase64: string, mimeType?: string, clientId?: string }) => {
-    try {
-      const summary = getContextSummary() || { file: 'unspecified', languageId: 'plain', surroundingText: '', mode: 'plain' }
-      const text = await performOcr(context, body.imageBase64, body.mimeType, summary as any, settings)
-      if (!text) {
-        return { ok: false, error: 'Empty OCR result' }
-      }
-      const inserted = await insertOrClipboard(text, summary as any)
-      return { ok: true, result: text, inserted: inserted.inserted, location: inserted.location }
-    } catch (err: any) {
-      return { ok: false, error: err?.message || 'OCR failed' }
-    }
-  }
-  const srv = startServer(context, settings, handler)
-  controller = srv.controller
-  mdns = advertise(settings.serviceName, settings.port, settings.requireToken)
-  updateStatusBar()
+  const srv = startServer(context, settings);
+  controller = srv.controller;
+  mdns = advertise(settings.serviceName, settings.port, settings.requireToken);
+  updateStatusBar();
 }
 
 async function stop() {
