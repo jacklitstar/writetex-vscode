@@ -6,7 +6,6 @@ export interface ContextSummary {
   file: string
   languageId: string
   surroundingText: string
-  mode: ModeHint
 }
 
 function getSurrounding(editor: vscode.TextEditor): string {
@@ -31,23 +30,8 @@ function getSurrounding(editor: vscode.TextEditor): string {
   return b + '\n' + marker + '\n' + a
 }
 
-function detectTexMode(text: string, cursorLine: number): ModeHint {
-  const lines = text.split(/\r?\n/)
-  const near = (i: number) => lines[Math.max(0, Math.min(lines.length - 1, i))]
-  const window = [near(cursorLine - 1), near(cursorLine), near(cursorLine + 1)].join('\n')
-  if (/\\begin\{tikzpicture\}/.test(text) && /\\end\{tikzpicture\}/.test(text)) return 'tikz-body'
-  if (/\$\$/.test(window) || /\\\[/.test(window)) return 'latex-display'
-  if (/\$[^$]*$/.test(window) || /\\\([^)]*\)$/.test(window)) return 'latex-inline'
-  return 'plain'
-}
 
-function detectMarkdownMode(text: string, cursorLine: number): ModeHint {
-  const lines = text.split(/\r?\n/)
-  const window = [lines[Math.max(0, cursorLine - 1)], lines[cursorLine] || '', lines[Math.min(lines.length - 1, cursorLine + 1)]].join('\n')
-  if (/\$\$/.test(window)) return 'markdown-display'
-  if (/\$[^$]*$/.test(window)) return 'markdown-inline'
-  return 'plain'
-}
+
 
 export function getContextSummary(): ContextSummary | null {
   const editor = vscode.window.activeTextEditor
@@ -55,14 +39,5 @@ export function getContextSummary(): ContextSummary | null {
   const languageId = editor.document.languageId
   const file = editor.document.fileName.split(/[\\/]/).pop() || editor.document.fileName
   const surroundingText = getSurrounding(editor)
-  let mode: ModeHint = 'plain'
-  const cursorLine = editor.selection.active.line
-  if (languageId === 'latex' || languageId === 'tex' || languageId === 'bibtex') {
-    mode = detectTexMode(editor.document.getText(), cursorLine)
-  } else if (languageId === 'markdown' || languageId === 'rmarkdown' || languageId === 'quarto') {
-    mode = detectMarkdownMode(editor.document.getText(), cursorLine)
-  } else {
-    mode = 'plain'
-  }
-  return { file, languageId, surroundingText, mode }
+  return { file, languageId, surroundingText }
 }

@@ -37,14 +37,13 @@ export function injectContext(messages: OpenAIMessage[]): OpenAIMessage[] {
 
 File: ${context.file}
 Language: ${context.languageId}
-Mode hint: ${context.mode}
 
 Surrounding context (cursor marked with '${marker}'):
 --------------------
 ${context.surroundingText}
 --------------------
 
-When extracting content from images, return ONLY the exact code necessary. No commentary, no explanations, no prose, no code blocks. Prefer formatting consistent with the provided editor context. Do not include preamble/packages. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper. If math, choose inline $...$ vs display \\[...\\] consistent with context.`;
+Your ouput will be placed at the user's cursor. When extracting content from images, return ONLY the exact code necessary. No commentary, no explanations, no prose, no code blocks. Prefer formatting consistent with the provided editor context. Do not include preamble/packages. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper.`;
 
     // Inject context as the first system message
     const contextMessage: OpenAIMessage = {

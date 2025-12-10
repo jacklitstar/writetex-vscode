@@ -35,12 +35,12 @@
       "properties": {
         "writetex.contextLineRadius": {
           "type": "number",
-          "default": 100,
+          "default": 20,
           "description": "Number of lines of context before/after the cursor to include"
         },
         "writetex.contextCharLimit": {
           "type": "number",
-          "default": 4000,
+          "default": 2000,
           "description": "Maximum characters of surrounding context to include in the prompt"
         },
         "writetex.apiEndpoint": {

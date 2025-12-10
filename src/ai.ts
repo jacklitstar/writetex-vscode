@@ -9,7 +9,7 @@ function buildInstructionMessage(): string {
 }
 
 function buildContextMessage(ctx: ContextSummary): string {
-  return `File: ${ctx.file}\nLanguage: ${ctx.languageId}\nMode hint: ${ctx.mode}\nSurrounding context:\n--------------------\n${ctx.surroundingText}\n\nTask: Extract the math/diagram content from the attached image and output ONLY the raw LaTeX/TikZ/Markdown code suitable for ${ctx.mode}. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper. If math, choose inline $...$ vs display \\[...\\] consistent with context.`
+  return `File: ${ctx.file}\nLanguage: ${ctx.languageId}\nSurrounding context:\n--------------------\n${ctx.surroundingText}\n\nTask: Extract the math/diagram content from the attached image and output ONLY the raw LaTeX/TikZ/Markdown code suitable for the surrounding context.`
 }
 
 export async function performOcr(context: vscode.ExtensionContext, imageBase64: string, mimeType: string | undefined, summary: ContextSummary, settings: WriteTexSettings): Promise<string> {
