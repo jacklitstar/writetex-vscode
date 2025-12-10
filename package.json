@@ -33,16 +33,6 @@
     "configuration": {
       "title": "WriteTex",
       "properties": {
-        "writetex.port": {
-          "type": "number",
-          "default": 53421,
-          "description": "Port for the WriteTex OCR HTTP server"
-        },
-        "writetex.serviceName": {
-          "type": "string",
-          "default": "WriteTex VS Code",
-          "description": "mDNS service name advertised on the local network"
-        },
         "writetex.contextLineRadius": {
           "type": "number",
           "default": 100,
@@ -52,16 +42,6 @@
           "type": "number",
           "default": 4000,
           "description": "Maximum characters of surrounding context to include in the prompt"
-        },
-        "writetex.requireToken": {
-          "type": "boolean",
-          "default": false,
-          "description": "Require a shared token in requests for authentication"
-        },
-        "writetex.token": {
-          "type": "string",
-          "default": "",
-          "markdownDescription": "Shared secret token required when `writetex.requireToken` is true"
         },
         "writetex.apiEndpoint": {
           "type": "string",

@@ -173,14 +173,14 @@ async function handleChatCompletion(
   }
 }
 
-export function startServer(context: vscode.ExtensionContext, settings: WriteTexSettings): { server: http.Server, controller: ServerController } {
+export function startServer(context: vscode.ExtensionContext, settings: WriteTexSettings, port: number): { server: http.Server, controller: ServerController } {
   const maxSize = 10 * 1024 * 1024;
 
   const server = http.createServer(async (req, res) => {
     // Health check
     if (req.method === 'GET' && req.url === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: true, service: 'WriteTex OpenAI Proxy', port: settings.port }));
+      res.end(JSON.stringify({ ok: true, service: 'WriteTex OpenAI Proxy', port }));
       return;
     }
 
@@ -216,15 +216,13 @@ export function startServer(context: vscode.ExtensionContext, settings: WriteTex
           return;
         }
 
-        // Optional token authentication
-        if (settings.requireToken) {
-          const authHeader = req.headers.authorization;
-          const token = authHeader?.replace(/^Bearer\s+/i, '');
-          if (!token || token !== settings.token) {
-            res.writeHead(401, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: { message: 'Unauthorized' } }));
-            return;
-          }
+        // Token authentication (hard-coded)
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.replace(/^Bearer\s+/i, '');
+        if (!token || token !== 'writetex') {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: { message: 'Unauthorized' } }));
+          return;
         }
 
         await handleChatCompletion(context, settings, json as ProxyRequest, res);
@@ -237,7 +235,7 @@ export function startServer(context: vscode.ExtensionContext, settings: WriteTex
     res.end(JSON.stringify({ error: { message: 'Not found' } }));
   });
 
-  server.listen(settings.port, '0.0.0.0');
+  server.listen(port, '0.0.0.0');
 
   const controller: ServerController = {
     stop: async () => new Promise(resolve => server.close(() => resolve()))

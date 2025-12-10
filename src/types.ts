@@ -14,13 +14,9 @@ export interface OcrResponseBody {
 }
 
 export interface WriteTexSettings {
-  port: number
-  serviceName: string
-  requireToken: boolean
-  token: string
-  apiEndpoint: string
-  apiModel: string
-  apiKey: string
+  apiEndpoint: string;
+  apiModel: string;
+  apiKey: string;
 }
 
 export type OcrHandler = (body: OcrRequestBody) => Promise<OcrResponseBody>

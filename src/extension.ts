@@ -24,12 +24,8 @@ function updateStatusBar() {
 }
 
 function getSettings(): WriteTexSettings {
-  const cfg = vscode.workspace.getConfiguration('writetex')
+  const cfg = vscode.workspace.getConfiguration('writetex');
   return {
-    port: cfg.get<number>('port', 53421),
-    serviceName: cfg.get<string>('serviceName', 'WriteTex OCR'),
-    requireToken: cfg.get<boolean>('requireToken', false),
-    token: cfg.get<string>('token', ''),
     apiEndpoint: cfg.get<string>('apiEndpoint', 'https://api.openai.com/v1'),
     apiModel: cfg.get<string>('apiModel', 'gpt-4o'),
     apiKey: cfg.get<string>('apiKey', '')
@@ -51,16 +47,17 @@ async function start(context: vscode.ExtensionContext) {
   if (!settings.apiKey || settings.apiKey.trim() === '') {
     vscode.window.showWarningMessage('WriteTex: API key not configured. Please set writetex.apiKey in settings.');
   }
-  const srv = startServer(context, settings);
+  const port = 53421;
+  const srv = startServer(context, settings, port);
   controller = srv.controller;
-  mdns = advertise(settings.serviceName, settings.port, settings.requireToken);
+  mdns = advertise(port);
   updateStatusBar();
 }
 
 async function stop() {
-  if (controller) { await controller.stop(); controller = null }
-  if (mdns) { await mdns.stop(); mdns = null }
-  if (statusItem) statusItem.hide()
+  if (controller) { await controller.stop(); controller = null; }
+  if (mdns) { await mdns.stop(); mdns = null; }
+  if (statusItem) { statusItem.hide(); }
 }
 
 // This method is called when your extension is activated

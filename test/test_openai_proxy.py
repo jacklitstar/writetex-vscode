@@ -46,8 +46,12 @@ def main():
     data = json.dumps(openai_request).encode('utf-8')
     url = f'http://{host}:{port}/v1/chat/completions'
     
+    # Add authentication token
+    token = os.environ.get('WRITETEX_TOKEN', 'writetex')
+    
     req = request.Request(url, data=data, headers={
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}'
     })
     
     print(f"Sending request to {url}...")
