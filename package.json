@@ -12,8 +12,7 @@
   "activationEvents": [
     "onStartupFinished",
     "onCommand:writetex.startServer",
-    "onCommand:writetex.stopServer",
-    "onCommand:writetex.grantCopilotAccess"
+    "onCommand:writetex.stopServer"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -25,10 +24,6 @@
       {
         "command": "writetex.stopServer",
         "title": "WriteTex: Stop OCR Server"
-      },
-      {
-        "command": "writetex.grantCopilotAccess",
-        "title": "WriteTex: Grant Copilot Access"
       },
       {
         "command": "writetex.showCommands",
@@ -68,10 +63,20 @@
           "default": "",
           "markdownDescription": "Shared secret token required when `writetex.requireToken` is true"
         },
-        "writetex.modelId": {
+        "writetex.apiEndpoint": {
           "type": "string",
-          "default": "copilot-gpt-4o",
-          "description": "Identifier for the Copilot model to use for vision OCR"
+          "default": "https://api.openai.com/v1",
+          "description": "OpenAI-compatible API endpoint URL"
+        },
+        "writetex.apiModel": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "Model name to use for vision OCR (e.g., gpt-4o, gpt-4-vision-preview)"
+        },
+        "writetex.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "API key for the OpenAI-compatible service. **Warning**: Stored in plaintext in settings.json"
         }
       }
     }

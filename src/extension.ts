@@ -33,8 +33,10 @@ function getSettings(): WriteTexSettings {
     serviceName: cfg.get<string>('serviceName', 'WriteTex OCR'),
     requireToken: cfg.get<boolean>('requireToken', false),
     token: cfg.get<string>('token', ''),
-    modelId: cfg.get<string>('modelId', 'copilot-gpt-4o')
-  }
+    apiEndpoint: cfg.get<string>('apiEndpoint', 'https://api.openai.com/v1'),
+    apiModel: cfg.get<string>('apiModel', 'gpt-4o'),
+    apiKey: cfg.get<string>('apiKey', '')
+  };
 }
 
 async function start(context: vscode.ExtensionContext) {
@@ -48,13 +50,9 @@ async function start(context: vscode.ExtensionContext) {
     statusItem.text = 'WriteTex'
     statusItem.command = 'writetex.showCommands'
   }
-  try {
-    const [model] = await vscode.lm.selectChatModels({ id: settings.modelId })
-    if (!model) {
-      vscode.window.showWarningMessage('No Copilot model available. Please check Copilot and try again.')
-    }
-  } catch (err) {
-    // consent/auth may prompt; errors are handled at request time as well
+  // Validate API configuration
+  if (!settings.apiKey || settings.apiKey.trim() === '') {
+    vscode.window.showWarningMessage('WriteTex: API key not configured. Please set writetex.apiKey in settings.')
   }
   const handler = async (body: { imageBase64: string, mimeType?: string, clientId?: string }) => {
     try {
@@ -66,10 +64,6 @@ async function start(context: vscode.ExtensionContext) {
       const inserted = await insertOrClipboard(text, summary as any)
       return { ok: true, result: text, inserted: inserted.inserted, location: inserted.location }
     } catch (err: any) {
-      if (err instanceof vscode.LanguageModelError) {
-        vscode.window.showWarningMessage('Copilot access not granted or blocked. Use "WriteTex: Grant Copilot Access".')
-        return { ok: false, error: err.message }
-      }
       return { ok: false, error: err?.message || 'OCR failed' }
     }
   }
@@ -88,36 +82,22 @@ async function stop() {
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    start(context)
-    const startCmd = vscode.commands.registerCommand('writetex.startServer', () => start(context))
-    const stopCmd = vscode.commands.registerCommand('writetex.stopServer', () => stop())
-    const grantCmd = vscode.commands.registerCommand('writetex.grantCopilotAccess', async () => {
-      const settings = getSettings()
-      try {
-        const [model] = await vscode.lm.selectChatModels({ id: settings.modelId })
-        if (!model) {
-          vscode.window.showWarningMessage('No Copilot model available.')
-        } else {
-          vscode.window.showInformationMessage('Copilot access granted.')
-        }
-      } catch (err: any) {
-        vscode.window.showWarningMessage(err?.message || 'Copilot access could not be granted.')
-      }
-    })
-    const showCmd = vscode.commands.registerCommand('writetex.showCommands', async () => {
-      const picks = [
-        { label: 'Start OCR Server', value: 'writetex.startServer' },
-        { label: 'Stop OCR Server', value: 'writetex.stopServer' },
-        //{ label: 'Grant Copilot Access', value: 'writetex.grantCopilotAccess' }
-      ]
-      const sel = await vscode.window.showQuickPick(picks, { placeHolder: 'WriteTex actions' })
-      if (sel?.value) {
-        await vscode.commands.executeCommand(sel.value)
-      }
-    })
-    if (statusItem) context.subscriptions.push(statusItem)
-    context.subscriptions.push(startCmd, stopCmd, grantCmd, showCmd)
-    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => updateStatusBar()))
+  start(context)
+  const startCmd = vscode.commands.registerCommand('writetex.startServer', () => start(context))
+  const stopCmd = vscode.commands.registerCommand('writetex.stopServer', () => stop())
+  const showCmd = vscode.commands.registerCommand('writetex.showCommands', async () => {
+    const picks = [
+      { label: 'Start OCR Server', value: 'writetex.startServer' },
+      { label: 'Stop OCR Server', value: 'writetex.stopServer' }
+    ]
+    const sel = await vscode.window.showQuickPick(picks, { placeHolder: 'WriteTex actions' })
+    if (sel?.value) {
+      await vscode.commands.executeCommand(sel.value)
+    }
+  })
+  if (statusItem) context.subscriptions.push(statusItem)
+  context.subscriptions.push(startCmd, stopCmd, showCmd)
+  context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => updateStatusBar()))
 }
 
 // This method is called when your extension is deactivated

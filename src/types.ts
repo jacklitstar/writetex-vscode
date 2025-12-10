@@ -18,7 +18,9 @@ export interface WriteTexSettings {
   serviceName: string
   requireToken: boolean
   token: string
-  modelId: string
+  apiEndpoint: string
+  apiModel: string
+  apiKey: string
 }
 
 export type OcrHandler = (body: OcrRequestBody) => Promise<OcrResponseBody>
