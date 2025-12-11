@@ -157,6 +157,12 @@ OpenAI-compatible chat completions endpoint. Send image data as base64 in the me
 git clone https://github.com/jacklitstar/writetex-vscode.git
 cd writetex-vscode
 ```
+
+For Mac and Linux devices, change line 85 of `package.json` to
+```
+    "compile": "tsc -p ./ && cp -R src/locales out/locales",
+```
+
 ### Build
 ```bash
 npm install
