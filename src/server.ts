@@ -235,7 +235,10 @@ export function startServer(context: vscode.ExtensionContext, settings: WriteTex
     res.end(JSON.stringify({ error: { message: 'Not found' } }));
   });
 
-  server.listen(port, '0.0.0.0');
+  server.listen(port, '0.0.0.0', () => {
+    console.log(`[Server] HTTP server listening on 0.0.0.0:${port}`);
+    console.log(`[Server] Accessible on all network interfaces`);
+  });
 
   const controller: ServerController = {
     stop: async () => new Promise(resolve => server.close(() => resolve()))
