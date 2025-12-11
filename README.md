@@ -3,7 +3,9 @@
 [![Version](https://img.shields.io/badge/version-0.0.1-blue.svg)](https://github.com/jacklitstar/writetex-vscode)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Write LaTeX with AI-powered OCR assistance directly in Visual Studio Code. WriteTex seamlessly integrates OpenAI-compatible vision models to help you convert handwritten equations, diagrams, and text into LaTeX, all while maintaining context from your current document.
+WriteTex is a tablet/ipad app that converts handwritten math to LaTeX. Checkout our [website](https://www.writetex.com) for more information.
+
+This extension allows users to use WriteTex in Visual Studio Code. It seamlessly integrates OpenAI-compatible vision models to help you convert handwritten equations, diagrams, and text into LaTeX, all while maintaining context from your current document, resulting in better OCR accuracy.
 
 ## ✨ Features
 
