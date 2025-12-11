@@ -38,9 +38,9 @@ function getActiveIPv4Addresses(): string[] {
  * to ensure proper multicast binding. On Mac/Linux, uses a single instance.
  */
 export function advertise(port: number): MdnsHandle {
-  const serviceName = 'WriteTex VSCode';
-  const serviceType = '_writetex-vscode._tcp.local';
   const hostname = os.hostname();
+  const serviceName = `WriteTex VSCode @ ${hostname}`;
+  const serviceType = '_writetex-vscode._tcp.local';
   const fqdn = `${hostname}.local`;
 
   const mdnsInstances: any[] = [];
