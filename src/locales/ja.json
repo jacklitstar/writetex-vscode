@@ -1,0 +1,47 @@
+{
+    "serverControl": {
+        "title": "サーバー制御",
+        "statusRunning": "サーバー実行中",
+        "statusStopped": "サーバー停止中",
+        "statusChecking": "確認中...",
+        "startButton": "サーバーを起動",
+        "stopButton": "サーバーを停止"
+    },
+    "apiConfig": {
+        "title": "AI API 設定",
+        "endpoint": "API エンドポイント",
+        "endpointHint": "OpenAI 互換 API のベース URL",
+        "model": "モデル",
+        "modelHint": "OCR 用のビジョンモデル（例：gpt-4o）",
+        "apiKey": "API キー",
+        "apiKeyHint": "settings.json に平文で保存されます"
+    },
+    "contextSettings": {
+        "title": "コンテキスト設定",
+        "lineRadius": "コンテキスト行半径",
+        "lineRadiusHint": "カーソル前後のコンテキスト行数",
+        "charLimit": "コンテキスト文字制限",
+        "charLimitHint": "コンテキストの最大文字数"
+    },
+    "actions": {
+        "saveButton": "設定を保存",
+        "saveSuccess": "WriteTex 設定が正常に保存されました！",
+        "saveFailed": "設定の保存に失敗しました：{0}"
+    },
+    "commands": {
+        "startServer": "WriteTex：OCR サーバーを起動",
+        "stopServer": "WriteTex：OCR サーバーを停止",
+        "showActions": "WriteTex：アクションを表示",
+        "startServerLabel": "OCR サーバーを起動",
+        "stopServerLabel": "OCR サーバーを停止",
+        "actionsPlaceholder": "WriteTex アクション"
+    },
+    "warnings": {
+        "apiKeyNotConfigured": "WriteTex：API キーが設定されていません。設定で writetex.apiKey を設定してください。"
+    },
+    "helpFeedback": {
+        "title": "ヘルプとフィードバック",
+        "viewSource": "ソースを表示",
+        "documentation": "ドキュメント"
+    }
+}

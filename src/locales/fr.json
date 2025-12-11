@@ -1,0 +1,47 @@
+{
+    "serverControl": {
+        "title": "Contrôle du Serveur",
+        "statusRunning": "Serveur en Cours d'Exécution",
+        "statusStopped": "Serveur Arrêté",
+        "statusChecking": "Vérification...",
+        "startButton": "Démarrer le Serveur",
+        "stopButton": "Arrêter le Serveur"
+    },
+    "apiConfig": {
+        "title": "Configuration de l'API IA",
+        "endpoint": "Point de Terminaison API",
+        "endpointHint": "URL de base pour l'API compatible OpenAI",
+        "model": "Modèle",
+        "modelHint": "Modèle de vision pour OCR (ex. gpt-4o)",
+        "apiKey": "Clé API",
+        "apiKeyHint": "Stockée en texte brut dans settings.json"
+    },
+    "contextSettings": {
+        "title": "Paramètres de Contexte",
+        "lineRadius": "Rayon de Lignes de Contexte",
+        "lineRadiusHint": "Lignes de contexte avant/après le curseur",
+        "charLimit": "Limite de Caractères du Contexte",
+        "charLimitHint": "Nombre maximum de caractères du contexte"
+    },
+    "actions": {
+        "saveButton": "Enregistrer les Paramètres",
+        "saveSuccess": "Paramètres WriteTex enregistrés avec succès !",
+        "saveFailed": "Échec de l'enregistrement des paramètres : {0}"
+    },
+    "commands": {
+        "startServer": "WriteTex : Démarrer le Serveur OCR",
+        "stopServer": "WriteTex : Arrêter le Serveur OCR",
+        "showActions": "WriteTex : Afficher les Actions",
+        "startServerLabel": "Démarrer le Serveur OCR",
+        "stopServerLabel": "Arrêter le Serveur OCR",
+        "actionsPlaceholder": "Actions WriteTex"
+    },
+    "warnings": {
+        "apiKeyNotConfigured": "WriteTex : Clé API non configurée. Veuillez définir writetex.apiKey dans les paramètres."
+    },
+    "helpFeedback": {
+        "title": "Aide et Commentaires",
+        "viewSource": "Voir la Source",
+        "documentation": "Documentation"
+    }
+}

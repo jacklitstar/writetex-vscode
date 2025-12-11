@@ -1,0 +1,105 @@
+{
+  "name": "writetex-vscode",
+  "displayName": "WriteTex",
+  "description": "Write LaTeX with AI powered OCR",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:writetex.startServer",
+    "onCommand:writetex.stopServer",
+    "onView:writetex.sidebarView"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "writetex.startServer",
+        "title": "WriteTex: Start OCR Server"
+      },
+      {
+        "command": "writetex.stopServer",
+        "title": "WriteTex: Stop OCR Server"
+      },
+      {
+        "command": "writetex.showCommands",
+        "title": "WriteTex: Show Actions"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "writetex",
+          "title": "WriteTex",
+          "icon": "resources/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "writetex": [
+        {
+          "type": "webview",
+          "id": "writetex.sidebarView",
+          "name": "Settings & Control"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "WriteTex",
+      "properties": {
+        "writetex.contextLineRadius": {
+          "type": "number",
+          "default": 20,
+          "description": "Number of lines of context before/after the cursor to include"
+        },
+        "writetex.contextCharLimit": {
+          "type": "number",
+          "default": 2000,
+          "description": "Maximum characters of surrounding context to include in the prompt"
+        },
+        "writetex.apiEndpoint": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "OpenAI-compatible API endpoint URL"
+        },
+        "writetex.apiModel": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "Model name to use for vision OCR (e.g., gpt-4o, gpt-4-vision-preview)"
+        },
+        "writetex.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "API key for the OpenAI-compatible service. **Warning**: Stored in plaintext in settings.json"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./ && xcopy /E /I /Y src\\locales out\\locales",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "multicast-dns": "^7.2.5"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/multicast-dns": "^7.2.4",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.104.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1"
+  }
+}

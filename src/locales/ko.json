@@ -1,0 +1,47 @@
+{
+    "serverControl": {
+        "title": "서버 제어",
+        "statusRunning": "서버 실행 중",
+        "statusStopped": "서버 중지됨",
+        "statusChecking": "확인 중...",
+        "startButton": "서버 시작",
+        "stopButton": "서버 중지"
+    },
+    "apiConfig": {
+        "title": "AI API 구성",
+        "endpoint": "API 엔드포인트",
+        "endpointHint": "OpenAI 호환 API의 기본 URL",
+        "model": "모델",
+        "modelHint": "OCR용 비전 모델 (예: gpt-4o)",
+        "apiKey": "API 키",
+        "apiKeyHint": "settings.json에 평문으로 저장됩니다"
+    },
+    "contextSettings": {
+        "title": "컨텍스트 설정",
+        "lineRadius": "컨텍스트 줄 반경",
+        "lineRadiusHint": "커서 앞뒤의 컨텍스트 줄 수",
+        "charLimit": "컨텍스트 문자 제한",
+        "charLimitHint": "컨텍스트의 최대 문자 수"
+    },
+    "actions": {
+        "saveButton": "설정 저장",
+        "saveSuccess": "WriteTex 설정이 성공적으로 저장되었습니다!",
+        "saveFailed": "설정 저장 실패: {0}"
+    },
+    "commands": {
+        "startServer": "WriteTex: OCR 서버 시작",
+        "stopServer": "WriteTex: OCR 서버 중지",
+        "showActions": "WriteTex: 작업 표시",
+        "startServerLabel": "OCR 서버 시작",
+        "stopServerLabel": "OCR 서버 중지",
+        "actionsPlaceholder": "WriteTex 작업"
+    },
+    "warnings": {
+        "apiKeyNotConfigured": "WriteTex: API 키가 구성되지 않았습니다. 설정에서 writetex.apiKey를 설정하세요."
+    },
+    "helpFeedback": {
+        "title": "도움말 및 피드백",
+        "viewSource": "소스 보기",
+        "documentation": "문서"
+    }
+}
