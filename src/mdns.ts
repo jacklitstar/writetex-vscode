@@ -106,23 +106,56 @@ function setupMdnsResponder(
   const serviceInstanceName = `${serviceName}.${serviceType}`;
 
   mdns.on('query', (query: any) => {
-    const responses: any[] = [];
+    const answers: any[] = [];
+    const additionals: any[] = [];
 
     for (const question of query.questions || []) {
       // Respond to service type queries (PTR)
       if (question.name === serviceType && question.type === 'PTR') {
-        responses.push({
+        answers.push({
           name: serviceType,
           type: 'PTR',
           ttl: 120,
           data: serviceInstanceName
         });
+
+        // Include SRV, TXT, and A records as additionals for complete resolution
+        additionals.push({
+          name: serviceInstanceName,
+          type: 'SRV',
+          ttl: 120,
+          data: {
+            priority: 0,
+            weight: 0,
+            port: port,
+            target: fqdn
+          }
+        });
+
+        additionals.push({
+          name: serviceInstanceName,
+          type: 'TXT',
+          ttl: 120,
+          data: {
+            fork: vscode.env.appName
+          }
+        });
+
+        const addresses = getActiveIPv4Addresses();
+        for (const addr of addresses) {
+          additionals.push({
+            name: fqdn,
+            type: 'A',
+            ttl: 120,
+            data: addr
+          });
+        }
       }
 
       // Respond to service instance queries (SRV, TXT)
       if (question.name === serviceInstanceName) {
         if (question.type === 'SRV' || question.type === 'ANY') {
-          responses.push({
+          answers.push({
             name: serviceInstanceName,
             type: 'SRV',
             ttl: 120,
@@ -133,14 +166,27 @@ function setupMdnsResponder(
               target: fqdn
             }
           });
+
+          // Include A records as additionals
+          const addresses = getActiveIPv4Addresses();
+          for (const addr of addresses) {
+            additionals.push({
+              name: fqdn,
+              type: 'A',
+              ttl: 120,
+              data: addr
+            });
+          }
         }
 
         if (question.type === 'TXT' || question.type === 'ANY') {
-          responses.push({
+          answers.push({
             name: serviceInstanceName,
             type: 'TXT',
             ttl: 120,
-            data: Buffer.from(`fork=${vscode.env.appName}`)
+            data: {
+              fork: vscode.env.appName
+            }
           });
         }
       }
@@ -149,7 +195,7 @@ function setupMdnsResponder(
       if (question.name === fqdn && (question.type === 'A' || question.type === 'ANY')) {
         const addresses = getActiveIPv4Addresses();
         for (const addr of addresses) {
-          responses.push({
+          answers.push({
             name: fqdn,
             type: 'A',
             ttl: 120,
@@ -159,8 +205,8 @@ function setupMdnsResponder(
       }
     }
 
-    if (responses.length > 0) {
-      mdns.respond(responses);
+    if (answers.length > 0) {
+      mdns.respond({ answers, additionals });
     }
   });
 
@@ -189,7 +235,9 @@ function setupMdnsResponder(
         name: serviceInstanceName,
         type: 'TXT',
         ttl: 120,
-        data: Buffer.from(`fork=${vscode.env.appName}`)
+        data: {
+          fork: vscode.env.appName
+        }
       }
     ];
 
