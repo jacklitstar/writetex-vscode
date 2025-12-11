@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getI18n } from './i18n';
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
@@ -56,6 +57,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   private async _saveSettings(settings: any) {
     const config = vscode.workspace.getConfiguration('writetex');
+    const i18n = getI18n();
 
     try {
       await config.update('apiEndpoint', settings.apiEndpoint, vscode.ConfigurationTarget.Global);
@@ -64,16 +66,17 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       await config.update('contextLineRadius', parseInt(settings.contextLineRadius), vscode.ConfigurationTarget.Global);
       await config.update('contextCharLimit', parseInt(settings.contextCharLimit), vscode.ConfigurationTarget.Global);
 
-      vscode.window.showInformationMessage('WriteTex settings saved successfully!');
+      vscode.window.showInformationMessage(i18n.t().actions.saveSuccess);
       this._updateWebview();
     } catch (error: any) {
-      vscode.window.showErrorMessage(`Failed to save settings: ${error.message}`);
+      vscode.window.showErrorMessage(i18n.format(i18n.t().actions.saveFailed, error.message));
     }
   }
 
   private _updateWebview() {
     if (this._view) {
       const config = vscode.workspace.getConfiguration('writetex');
+      const i18n = getI18n();
       this._view.webview.postMessage({
         type: 'updateSettings',
         settings: {
@@ -83,7 +86,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           contextLineRadius: config.get<number>('contextLineRadius', 20),
           contextCharLimit: config.get<number>('contextCharLimit', 2000),
         },
-        serverRunning: this._serverRunning
+        serverRunning: this._serverRunning,
+        translations: i18n.t()
       });
     }
   }
@@ -244,7 +248,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   <div class="divider"></div>
 
   <div class="section">
-    <h2>OpenAI API Configuration</h2>
+    <h2>AI API Configuration</h2>
     <div class="form-group">
       <label for="apiEndpoint">API Endpoint</label>
       <input type="text" id="apiEndpoint" placeholder="https://api.openai.com/v1" />
@@ -303,16 +307,39 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       const message = event.data;
       if (message.type === 'updateSettings') {
         const settings = message.settings;
+        const t = message.translations;
+        
+        // Update form values
         apiEndpointInput.value = settings.apiEndpoint || '';
         apiModelInput.value = settings.apiModel || '';
         apiKeyInput.value = settings.apiKey || '';
         contextLineRadiusInput.value = settings.contextLineRadius || 20;
         contextCharLimitInput.value = settings.contextCharLimit || 2000;
         
+        // Update UI text
+        if (t) {
+          document.querySelector('.section h2').textContent = t.serverControl.title;
+          statusText.textContent = message.serverRunning ? t.serverControl.statusRunning : t.serverControl.statusStopped;
+          startBtn.textContent = t.serverControl.startButton;
+          stopBtn.textContent = t.serverControl.stopButton;
+          document.querySelectorAll('.section h2')[1].textContent = t.apiConfig.title;
+          document.querySelectorAll('label')[0].textContent = t.apiConfig.endpoint;
+          document.querySelectorAll('.hint')[0].textContent = t.apiConfig.endpointHint;
+          document.querySelectorAll('label')[1].textContent = t.apiConfig.model;
+          document.querySelectorAll('.hint')[1].textContent = t.apiConfig.modelHint;
+          document.querySelectorAll('label')[2].textContent = t.apiConfig.apiKey;
+          document.querySelectorAll('.hint')[2].textContent = t.apiConfig.apiKeyHint;
+          document.querySelectorAll('.section h2')[2].textContent = t.contextSettings.title;
+          document.querySelectorAll('label')[3].textContent = t.contextSettings.lineRadius;
+          document.querySelectorAll('.hint')[3].textContent = t.contextSettings.lineRadiusHint;
+          document.querySelectorAll('label')[4].textContent = t.contextSettings.charLimit;
+          document.querySelectorAll('.hint')[4].textContent = t.contextSettings.charLimitHint;
+          saveBtn.textContent = t.actions.saveButton;
+        }
+        
         // Update server status
         const running = message.serverRunning;
         statusIndicator.className = 'status-indicator ' + (running ? 'running' : 'stopped');
-        statusText.textContent = running ? 'Server Running' : 'Server Stopped';
         startBtn.disabled = running;
         stopBtn.disabled = !running;
       }

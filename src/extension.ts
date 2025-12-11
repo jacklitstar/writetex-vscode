@@ -5,6 +5,7 @@ import { startServer } from './server';
 import { advertise, MdnsHandle } from './mdns';
 import { WriteTexSettings } from './types';
 import { SidebarProvider } from './sidebarProvider';
+import { initI18n, getI18n } from './i18n';
 
 let controller: { stop: () => Promise<void> } | null = null;
 let mdns: MdnsHandle | null = null;
@@ -47,7 +48,8 @@ async function start(context: vscode.ExtensionContext) {
   }
   // Validate API configuration
   if (!settings.apiKey || settings.apiKey.trim() === '') {
-    vscode.window.showWarningMessage('WriteTex: API key not configured. Please set writetex.apiKey in settings.');
+    const i18n = getI18n();
+    vscode.window.showWarningMessage(i18n.t().warnings.apiKeyNotConfigured);
   }
   const port = 53421;
   const srv = startServer(context, settings, port);
@@ -75,6 +77,10 @@ async function stop() {
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  // Initialize i18n
+  initI18n(context.extensionPath);
+  const i18n = getI18n();
+
   // Register sidebar provider
   sidebarProvider = new SidebarProvider(
     context.extensionUri,
@@ -89,22 +95,23 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  start(context)
-  const startCmd = vscode.commands.registerCommand('writetex.startServer', () => start(context))
-  const stopCmd = vscode.commands.registerCommand('writetex.stopServer', () => stop())
+  start(context);
+  const startCmd = vscode.commands.registerCommand('writetex.startServer', () => start(context));
+  const stopCmd = vscode.commands.registerCommand('writetex.stopServer', () => stop());
   const showCmd = vscode.commands.registerCommand('writetex.showCommands', async () => {
+    const t = i18n.t();
     const picks = [
-      { label: 'Start OCR Server', value: 'writetex.startServer' },
-      { label: 'Stop OCR Server', value: 'writetex.stopServer' }
-    ]
-    const sel = await vscode.window.showQuickPick(picks, { placeHolder: 'WriteTex actions' })
+      { label: t.commands.startServerLabel, value: 'writetex.startServer' },
+      { label: t.commands.stopServerLabel, value: 'writetex.stopServer' }
+    ];
+    const sel = await vscode.window.showQuickPick(picks, { placeHolder: t.commands.actionsPlaceholder });
     if (sel?.value) {
-      await vscode.commands.executeCommand(sel.value)
+      await vscode.commands.executeCommand(sel.value);
     }
-  })
-  if (statusItem) context.subscriptions.push(statusItem)
-  context.subscriptions.push(startCmd, stopCmd, showCmd)
-  context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => updateStatusBar()))
+  });
+  if (statusItem) context.subscriptions.push(statusItem);
+  context.subscriptions.push(startCmd, stopCmd, showCmd);
+  context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => updateStatusBar()));
 }
 
 // This method is called when your extension is deactivated

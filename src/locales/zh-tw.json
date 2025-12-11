@@ -1,0 +1,42 @@
+{
+    "serverControl": {
+        "title": "伺服器控制",
+        "statusRunning": "伺服器運行中",
+        "statusStopped": "伺服器已停止",
+        "statusChecking": "檢查中...",
+        "startButton": "啟動伺服器",
+        "stopButton": "停止伺服器"
+    },
+    "apiConfig": {
+        "title": "AI API 配置",
+        "endpoint": "API 端點",
+        "endpointHint": "OpenAI 相容 API 的基礎 URL",
+        "model": "模型",
+        "modelHint": "用於 OCR 的視覺模型（例如 gpt-4o）",
+        "apiKey": "API 金鑰",
+        "apiKeyHint": "以明文形式儲存在 settings.json 中"
+    },
+    "contextSettings": {
+        "title": "上下文設定",
+        "lineRadius": "上下文行半徑",
+        "lineRadiusHint": "游標前後的上下文行數",
+        "charLimit": "上下文字元限制",
+        "charLimitHint": "上下文的最大字元數"
+    },
+    "actions": {
+        "saveButton": "儲存設定",
+        "saveSuccess": "WriteTex 設定儲存成功！",
+        "saveFailed": "儲存設定失敗：{0}"
+    },
+    "commands": {
+        "startServer": "WriteTex：啟動 OCR 伺服器",
+        "stopServer": "WriteTex：停止 OCR 伺服器",
+        "showActions": "WriteTex：顯示操作",
+        "startServerLabel": "啟動 OCR 伺服器",
+        "stopServerLabel": "停止 OCR 伺服器",
+        "actionsPlaceholder": "WriteTex 操作"
+    },
+    "warnings": {
+        "apiKeyNotConfigured": "WriteTex：未配置 API 金鑰。請在設定中設定 writetex.apiKey。"
+    }
+}
