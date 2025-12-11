@@ -9,7 +9,7 @@ from urllib import request
 
 def main():
     host = os.environ.get('WRITETEX_HOST', 'localhost')
-    port = int(os.environ.get('WRITETEX_PORT', '53421'))
+    port = int(os.environ.get('WRITETEX_PORT', '50905'))
     image_path = os.environ.get('WRITETEX_IMAGE', 'example7.png')
     
     if len(sys.argv) > 1:

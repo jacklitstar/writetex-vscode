@@ -6,7 +6,7 @@ from urllib import request
 
 def main():
     host = os.environ.get('WRITETEX_HOST', 'localhost')
-    port = int(os.environ.get('WRITETEX_PORT', '53421'))
+    port = int(os.environ.get('WRITETEX_PORT', '50905'))
     token = os.environ.get('WRITETEX_TOKEN', '')
     image_path = os.environ.get('WRITETEX_IMAGE', os.path.join('example7.png'))
     if len(sys.argv) > 1:

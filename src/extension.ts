@@ -11,7 +11,7 @@ let controller: { stop: () => Promise<void> } | null = null;
 let mdns: MdnsHandle | null = null;
 let statusItem: vscode.StatusBarItem | null = null;
 let sidebarProvider: SidebarProvider | null = null;
-const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto'];
+const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto', 'ipynb'];
 
 function updateStatusBar() {
   if (!statusItem) return
@@ -51,7 +51,7 @@ async function start(context: vscode.ExtensionContext) {
     const i18n = getI18n();
     vscode.window.showWarningMessage(i18n.t().warnings.apiKeyNotConfigured);
   }
-  const port = 53421;
+  const port = 50905;
   const srv = startServer(context, settings, port);
   controller = srv.controller;
   mdns = advertise(port);

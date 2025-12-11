@@ -1,71 +1,235 @@
-# writetex-vscode README
+# WriteTex for VSCode
 
-This is the README for your extension "writetex-vscode". After writing up a brief description, we recommend including the following sections.
+[![Version](https://img.shields.io/badge/version-0.0.1-blue.svg)](https://github.com/jacklitstar/writetex-vscode)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## Features
+Write LaTeX with AI-powered OCR assistance directly in Visual Studio Code. WriteTex seamlessly integrates OpenAI-compatible vision models to help you convert handwritten equations, diagrams, and text into LaTeX, all while maintaining context from your current document.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## ✨ Features
 
-For example if there is an image subfolder under your extension project workspace:
+### 🖼️ AI-Powered OCR
+- **Context-Aware Translation**: OCR results consider your document context for more accurate conversions
+- **OpenAI-Compatible API**: Works with any OpenAI-compatible vision model (GPT-4o, GPT-4 Vision, etc.)
+- **Automatic Insertion**: OCR results are automatically inserted at your cursor position
+- **Streaming Support**: Real-time streaming of OCR results
 
-\!\[feature X\]\(images/feature-x.png\)
+### 🎨 Sidebar Interface
+- **Intuitive Settings Panel**: Configure all settings through a sidebar UI
+- **Real-Time Server Control**: Start and stop the OCR server with one click
+- **Status Indicators**: Visual feedback for server status
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### 🔌 Network Discovery
+- **mDNS Service Advertisement**: Automatically discoverable on your local network
+- **Cross-Platform Support**: Works on Windows, macOS, and Linux
+- **Multiple Network Interfaces**: Binds to all available network interfaces
 
-## Requirements
+### 🎯 Supported File Types
+- LaTeX (`.tex`, `.latex`)
+- Markdown (`.md`, `.markdown`)
+- R Markdown (`.rmd`)
+- Quarto (`.qmd`)
+- Jupyter Notebooks (`.ipynb`)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## 📦 Installation
 
-## Extension Settings
+### From VSCode Marketplace
+1. Open VSCode
+2. Go to Extensions (`Ctrl+Shift+X` or `Cmd+Shift+X`)
+3. Search for "WriteTex"
+4. Click Install
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## 🚀 Getting Started
 
-For example:
+### 1. Configure API Settings
 
-This extension contributes the following settings:
+Click the WriteTex icon in the left sidebar to open the settings panel:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- **API Endpoint**: Your OpenAI-compatible API endpoint (default: `https://api.openai.com/v1`)
+- **Model**: Vision model to use (e.g., `gpt-4o`, `gpt-4-vision-preview`)
+- **API Key**: Your API key for authentication
 
-## Known Issues
+You can also configure these in VSCode settings:
+```json
+{
+  "writetex.apiEndpoint": "https://api.openai.com/v1",
+  "writetex.apiModel": "gpt-4o",
+  "writetex.apiKey": "your-api-key-here"
+}
+```
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### 2. Adjust Context Settings (Optional)
 
-## Release Notes
+- **Context Line Radius**: Number of lines before/after cursor to include (default: `20`)
+- **Context Char Limit**: Maximum characters of context (default: `2000`)
 
-Users appreciate release notes as you update your extension.
+### 3. Start the Server
 
-### 1.0.0
+Click the **Start Server** button in the sidebar. The status indicator will turn green when the server is running.
 
-Initial release of ...
+### 4. Use OCR
 
-### 1.0.1
+The WriteTex server runs on `localhost:50905` and is advertised via mDNS as `WriteTex VSCode @ <hostname>`.
 
-Fixed issue #.
+Connect your OCR client (mobile app, web app, etc.) to this endpoint and send image data. The OCR results will be automatically inserted at your cursor position in VSCode.
 
-### 1.1.0
+## ⚙️ Configuration
 
-Added features X, Y, and Z.
+All settings can be configured through the sidebar UI or VSCode settings:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `writetex.apiEndpoint` | `https://api.openai.com/v1` | OpenAI-compatible API endpoint |
+| `writetex.apiModel` | `gpt-4o` | Vision model for OCR |
+| `writetex.apiKey` | `""` | API key (⚠️ stored in plaintext) |
+| `writetex.contextLineRadius` | `20` | Lines of context around cursor |
+| `writetex.contextCharLimit` | `2000` | Maximum context characters |
+
+## 🔧 Architecture
+
+```
+┌─────────────────┐
+│   OCR Client    │ (Mobile/Desktop App)
+│  (Send Image)   │
+└────────┬────────┘
+         │ HTTP POST
+         │ /v1/chat/completions
+         ▼
+┌─────────────────┐
+│  WriteTex       │
+│  VSCode Ext     │
+│  Port: 50905    │
+└────────┬────────┘
+         │
+         ├─► mDNS Advertisement
+         │   (Service Discovery)
+         │
+         ├─► Context Extraction
+         │   (From active document)
+         │
+         ├─► OpenAI API Call
+         │   (Vision model OCR)
+         │
+         └─► Insert at Cursor
+             (In active document)
+```
+
+### Request Flow
+
+1. **Image Capture**: OCR client captures an image
+2. **API Request**: Client sends image to WriteTex Vscode extension server (`/v1/chat/completions`)
+3. **Context Injection**: WriteTex Vscode extension extracts context from the active document
+4. **Vision API Call**: WriteTex Vscode extension forwards request to OpenAI-compatible API with context
+5. **Streaming Response**: OCR results stream back to client
+6. **Auto-Insert**: Results are automatically inserted at cursor position
+
+### Authentication
+
+The server uses a hardcoded bearer token (`writetex`) for authentication. Clients must include:
+```
+Authorization: Bearer writetex
+```
+
+## 🌐 API Endpoints
+
+### Health Check
+```http
+GET /health
+```
+Returns server status and port information.
+
+### OCR Endpoint
+```http
+POST /v1/chat/completions
+POST /chat/completions
+```
+OpenAI-compatible chat completions endpoint. Send image data as base64 in the message content.
+
+## 🛠️ Development
+
+### Prerequisites
+- Node.js 16+
+- VSCode 1.104.0+
+### Clone
+
+```bash
+git clone https://github.com/jacklitstar/writetex-vscode.git
+cd writetex-vscode
+```
+### Build
+```bash
+npm install
+npm run compile
+```
+
+### Watch Mode
+```bash
+npm run watch
+```
+
+### Lint
+```bash
+npm run lint
+```
+
+### Test
+```bash
+npm test
+```
+
+## 📝 Commands
+
+Access commands via the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`):
+
+- **WriteTex: Start OCR Server** - Start the OCR proxy server
+- **WriteTex: Stop OCR Server** - Stop the OCR proxy server
+- **WriteTex: Show Actions** - Quick access to server controls
+
+## 🐛 Troubleshooting
+
+### Server Won't Start
+- Check if port 50905 is already in use
+- Ensure your firewall allows connections on this port
+- Check the Debug Console for error messages
+
+### OCR Not Working
+- Verify API key is correctly configured
+- Check API endpoint is accessible
+- Ensure the model supports vision/image inputs
+- Check Debug Console for API errors
+
+### mDNS Issues on Windows
+- Ensure Bonjour Service is installed (comes with iTunes or standalone)
+- Check Windows Firewall settings
+- Verify network discovery is enabled
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Adding Translations
+To add support for a new language or fix translations:
+
+1. Create a new JSON file in `src/locales/` (e.g., `ru.json`)
+2. Copy the structure from `src/locales/en.json`
+3. Translate all strings
+4. Add language mapping in `src/i18n.ts`
+5. Test with your language setting
+
+## 📚 Resources
+
+- **Documentation**: https://www.writetex.com/docs/vscode.html
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- AI models for vibe coding
+- The VSCode extension development community
+- All contributors and translators
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Vibe coded and LGTM by [jacklitstar](https://github.com/jacklitstar)

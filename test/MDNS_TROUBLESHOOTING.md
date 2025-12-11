@@ -42,7 +42,7 @@ Instead of mDNS, manually configure clients with your machine's IP:
 
 2. Configure clients to use:
    ```
-   http://10.x.x.x:53421/v1/chat/completions
+   http://10.x.x.x:50905/v1/chat/completions
    ```
 
 ### Option 4: Use Different mDNS Library (Complex)
@@ -58,7 +58,7 @@ Check if the server is accessible on your 10.x network:
 
 ```bash
 # From another device on 10.x network
-curl http://10.x.x.x:53421/health
+curl http://10.x.x.x:50905/health
 ```
 
 If this works, the server is fine - it's just mDNS advertising on the wrong interface.

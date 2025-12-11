@@ -24,7 +24,7 @@
 
 * Contribute configuration settings:
 
-  * `writetex.port` (default: 53421)
+  * `writetex.port` (default: 50905)
 
   * `writetex.serviceName` (default: "WriteTex OCR")
 
@@ -206,7 +206,7 @@
 
 ## Settings & Defaults
 
-* `writetex.port`: 53421
+* `writetex.port`: 50905
 
 * `writetex.serviceName`: "WriteTex OCR"
 

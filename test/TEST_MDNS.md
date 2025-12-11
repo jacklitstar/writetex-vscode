@@ -28,7 +28,7 @@ pip install zeroconf
    ✅ Found WriteTex Service:
      Name: WriteTex VSCode._writetex-vscode._tcp.local.
      Address: 192.168.x.x
-     Port: 53421
+     Port: 50905
      Properties:
        path: /v1/chat/completions
    
@@ -72,7 +72,7 @@ avahi-browse -r _writetex-vscode._tcp
 The extension advertises:
 - **Service Type**: `_writetex-vscode._tcp.local.`
 - **Service Name**: `WriteTex VSCode`
-- **Port**: `53421`
+- **Port**: `50905`
 - **TXT Record**: `path=/v1/chat/completions`
 
 Clients can discover this automatically on the local network without configuration.
