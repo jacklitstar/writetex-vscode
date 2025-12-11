@@ -38,5 +38,10 @@
     },
     "warnings": {
         "apiKeyNotConfigured": "WriteTex：API キーが設定されていません。設定で writetex.apiKey を設定してください。"
+    },
+    "helpFeedback": {
+        "title": "ヘルプとフィードバック",
+        "viewSource": "ソースを表示",
+        "documentation": "ドキュメント"
     }
 }

@@ -38,5 +38,10 @@
     },
     "warnings": {
         "apiKeyNotConfigured": "WriteTex: API 키가 구성되지 않았습니다. 설정에서 writetex.apiKey를 설정하세요."
+    },
+    "helpFeedback": {
+        "title": "도움말 및 피드백",
+        "viewSource": "소스 보기",
+        "documentation": "문서"
     }
 }

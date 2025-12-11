@@ -48,6 +48,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         case 'getSettings':
           this._updateWebview();
           break;
+        case 'openExternal':
+          vscode.env.openExternal(vscode.Uri.parse(data.url));
+          break;
       }
     });
 
@@ -230,6 +233,45 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       background: var(--vscode-panel-border);
       margin: 20px 0;
     }
+    
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 20px;
+    }
+   
+    .external-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--vscode-textLink-foreground);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    
+    .external-link:hover {
+      text-decoration: underline;
+    }
+    
+    .link-text {
+      font-size: 11px;
+    }
+    
+    .help-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--vscode-panel-border);
+    }
+    
+    .help-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--vscode-descriptionForeground);
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
@@ -287,6 +329,18 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   <button id="saveBtn">Save Settings</button>
 
+  <div class="help-section">
+    <div class="help-title">Help & Feedback</div>
+    <div class="link-list">
+      <a href="#" id="viewSourceLink" class="external-link">
+        <span class="link-text">View Source</span>
+      </a>
+      <a href="#" id="documentationLink" class="external-link">
+        <span class="link-text">Documentation</span>
+      </a>
+    </div>
+  </div>
+
   <script>
     const vscode = acquireVsCodeApi();
     
@@ -335,6 +389,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           document.querySelectorAll('label')[4].textContent = t.contextSettings.charLimit;
           document.querySelectorAll('.hint')[4].textContent = t.contextSettings.charLimitHint;
           saveBtn.textContent = t.actions.saveButton;
+          document.querySelector('.help-title').textContent = t.helpFeedback.title;
+          document.getElementById('viewSourceLink').querySelector('.link-text').textContent = t.helpFeedback.viewSource;
+          document.getElementById('documentationLink').querySelector('.link-text').textContent = t.helpFeedback.documentation;
         }
         
         // Update server status
@@ -367,6 +424,17 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     // Stop server
     stopBtn.addEventListener('click', () => {
       vscode.postMessage({ type: 'stopServer' });
+    });
+    
+    // External links
+    document.getElementById('viewSourceLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      vscode.postMessage({ type: 'openExternal', url: 'https://github.com/jacklitstar/writetex-vscode' });
+    });
+    
+    document.getElementById('documentationLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      vscode.postMessage({ type: 'openExternal', url: 'https://www.writetex.com/docs/vscode.html' });
     });
     
     // Request initial settings

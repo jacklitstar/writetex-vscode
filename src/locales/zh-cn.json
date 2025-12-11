@@ -38,5 +38,10 @@
     },
     "warnings": {
         "apiKeyNotConfigured": "WriteTex：未配置 API 密钥。请在设置中设置 writetex.apiKey。"
+    },
+    "helpFeedback": {
+        "title": "帮助与反馈",
+        "viewSource": "查看源代码",
+        "documentation": "文档"
     }
 }

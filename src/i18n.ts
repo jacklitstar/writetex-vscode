@@ -43,6 +43,11 @@ export interface Translations {
     warnings: {
         apiKeyNotConfigured: string;
     };
+    helpFeedback: {
+        title: string;
+        viewSource: string;
+        documentation: string;
+    };
 }
 
 class I18n {
@@ -141,6 +146,11 @@ class I18n {
             },
             warnings: {
                 apiKeyNotConfigured: 'WriteTex: API key not configured. Please set writetex.apiKey in settings.'
+            },
+            helpFeedback: {
+                title: 'Help & Feedback',
+                viewSource: 'View Source',
+                documentation: 'Documentation'
             }
         };
     }

@@ -38,5 +38,10 @@
     },
     "warnings": {
         "apiKeyNotConfigured": "WriteTex : Clé API non configurée. Veuillez définir writetex.apiKey dans les paramètres."
+    },
+    "helpFeedback": {
+        "title": "Aide et Commentaires",
+        "viewSource": "Voir la Source",
+        "documentation": "Documentation"
     }
 }
