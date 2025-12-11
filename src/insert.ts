@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ContextSummary, ModeHint } from './context'
+import { ContextSummary } from './context'
 
 export interface InsertResult {
   inserted: boolean

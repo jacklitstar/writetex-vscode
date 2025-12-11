@@ -1,6 +1,5 @@
 import * as vscode from 'vscode'
 
-export type ModeHint = 'latex-inline' | 'latex-display' | 'tikz-body' | 'markdown-inline' | 'markdown-display' | 'plain'
 
 export interface ContextSummary {
   file: string

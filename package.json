@@ -12,7 +12,8 @@
   "activationEvents": [
     "onStartupFinished",
     "onCommand:writetex.startServer",
-    "onCommand:writetex.stopServer"
+    "onCommand:writetex.stopServer",
+    "onView:writetex.sidebarView"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -30,6 +31,24 @@
         "title": "WriteTex: Show Actions"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "writetex",
+          "title": "WriteTex",
+          "icon": "resources/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "writetex": [
+        {
+          "type": "webview",
+          "id": "writetex.sidebarView",
+          "name": "Settings & Control"
+        }
+      ]
+    },
     "configuration": {
       "title": "WriteTex",
       "properties": {

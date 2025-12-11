@@ -4,11 +4,13 @@ import * as vscode from 'vscode';
 import { startServer } from './server';
 import { advertise, MdnsHandle } from './mdns';
 import { WriteTexSettings } from './types';
+import { SidebarProvider } from './sidebarProvider';
 
-let controller: { stop: () => Promise<void> } | null = null
-let mdns: MdnsHandle | null = null
-let statusItem: vscode.StatusBarItem | null = null
-const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto']
+let controller: { stop: () => Promise<void> } | null = null;
+let mdns: MdnsHandle | null = null;
+let statusItem: vscode.StatusBarItem | null = null;
+let sidebarProvider: SidebarProvider | null = null;
+const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto'];
 
 function updateStatusBar() {
   if (!statusItem) return
@@ -52,17 +54,41 @@ async function start(context: vscode.ExtensionContext) {
   controller = srv.controller;
   mdns = advertise(port);
   updateStatusBar();
+
+  // Notify sidebar
+  if (sidebarProvider) {
+    sidebarProvider.setServerStatus(true);
+  }
 }
 
 async function stop() {
   if (controller) { await controller.stop(); controller = null; }
   if (mdns) { await mdns.stop(); mdns = null; }
   if (statusItem) { statusItem.hide(); }
+
+  // Notify sidebar
+  if (sidebarProvider) {
+    sidebarProvider.setServerStatus(false);
+  }
 }
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  // Register sidebar provider
+  sidebarProvider = new SidebarProvider(
+    context.extensionUri,
+    () => start(context),
+    () => stop()
+  );
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      'writetex.sidebarView',
+      sidebarProvider
+    )
+  );
+
   start(context)
   const startCmd = vscode.commands.registerCommand('writetex.startServer', () => start(context))
   const stopCmd = vscode.commands.registerCommand('writetex.stopServer', () => stop())
