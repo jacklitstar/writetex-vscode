@@ -119,7 +119,7 @@ function advertiseWindows(port: number): MdnsHandle {
       try {
         const mdns = multicastDns({ interface: addr });
         mdnsInstances.push(mdns);
-        setupMdnsResponder(mdns, serviceName, serviceType, fqdn, port);
+        setupMdnsResponder(mdns, serviceName, serviceType, fqdn, port, addr);
         console.log(`[mDNS] Bound to interface: ${addr}`);
       } catch (err) {
         console.error(`[mDNS] Failed to bind to interface ${addr}:`, err);
@@ -150,7 +150,8 @@ function setupMdnsResponder(
   serviceName: string,
   serviceType: string,
   fqdn: string,
-  port: number
+  port: number,
+  boundAddress?: string
 ): void {
   const serviceInstanceName = `${serviceName}.${serviceType}`;
 
@@ -196,7 +197,7 @@ function setupMdnsResponder(
 
       // Respond to hostname queries (A)
       if (question.name === fqdn && (question.type === 'A' || question.type === 'ANY')) {
-        const addresses = getActiveIPv4Addresses();
+        const addresses = boundAddress ? [boundAddress] : getActiveIPv4Addresses();
         for (const addr of addresses) {
           responses.push({
             name: fqdn,
@@ -215,7 +216,7 @@ function setupMdnsResponder(
 
   // Proactively announce our service
   const announceService = () => {
-    const addresses = getActiveIPv4Addresses();
+    const addresses = boundAddress ? [boundAddress] : getActiveIPv4Addresses();
     const announcements = [
       {
         name: serviceType,
