@@ -14,7 +14,9 @@
         "model": "Model",
         "modelHint": "Vision model for OCR (e.g., gpt-4o)",
         "apiKey": "API Key",
-        "apiKeyHint": "Stored in plain text in settings.json"
+        "apiKeyHint": "Stored in plain text in settings.json",
+        "customPrompt": "Custom Instructions",
+        "customPromptHint": "Append to the system prompt"
     },
     "contextSettings": {
         "title": "Context Settings",

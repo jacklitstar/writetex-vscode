@@ -14,7 +14,9 @@
         "model": "Modell",
         "modelHint": "Vision-Modell für OCR (z.B. gpt-4o)",
         "apiKey": "API-Schlüssel",
-        "apiKeyHint": "Wird als Klartext in settings.json gespeichert"
+        "apiKeyHint": "Wird als Klartext in settings.json gespeichert",
+        "customPrompt": "Benutzerdefinierte Anweisungen",
+        "customPromptHint": "An die Systemaufforderung anhängen"
     },
     "contextSettings": {
         "title": "Kontexteinstellungen",

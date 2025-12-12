@@ -75,6 +75,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       await config.update('apiEndpoint', settings.apiEndpoint, vscode.ConfigurationTarget.Global);
       await config.update('apiModel', settings.apiModel, vscode.ConfigurationTarget.Global);
       await config.update('apiKey', settings.apiKey, vscode.ConfigurationTarget.Global);
+      await config.update('customPrompt', settings.customPrompt, vscode.ConfigurationTarget.Global);
       await config.update('contextLineRadius', parseInt(settings.contextLineRadius), vscode.ConfigurationTarget.Global);
       await config.update('contextCharLimit', parseInt(settings.contextCharLimit), vscode.ConfigurationTarget.Global);
 
@@ -104,6 +105,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           apiEndpoint: config.get<string>('apiEndpoint', 'https://api.openai.com/v1'),
           apiModel: config.get<string>('apiModel', 'gpt-4o'),
           apiKey: config.get<string>('apiKey', ''),
+          customPrompt: config.get<string>('customPrompt', ''),
           contextLineRadius: config.get<number>('contextLineRadius', 20),
           contextCharLimit: config.get<number>('contextCharLimit', 2000),
         },
@@ -161,7 +163,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     
     input[type="text"],
     input[type="number"],
-    input[type="password"] {
+    input[type="password"],
+    textarea {
       width: 100%;
       padding: 6px 8px;
       background: var(--vscode-input-background);
@@ -171,8 +174,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       font-family: var(--vscode-font-family);
       font-size: 13px;
     }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
     
-    input:focus {
+    input:focus,
+    textarea:focus {
       outline: 1px solid var(--vscode-focusBorder);
       outline-offset: -1px;
     }
@@ -258,7 +267,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       gap: 6px;
       margin-top: 20px;
     }
-   
+    
     .external-link {
       display: flex;
       align-items: center;
@@ -326,6 +335,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       <input type="password" id="apiKey" placeholder="sk-..." />
       <div class="hint">Stored in plain text in settings.json</div>
     </div>
+
+    <div class="form-group">
+      <label for="customPrompt">Custom Instructions</label>
+      <textarea id="customPrompt" placeholder="Additional instructions to append..."></textarea>
+      <div class="hint">Append to the system prompt</div>
+    </div>
   </div>
 
   <div class="divider"></div>
@@ -364,6 +379,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const apiEndpointInput = document.getElementById('apiEndpoint');
     const apiModelInput = document.getElementById('apiModel');
     const apiKeyInput = document.getElementById('apiKey');
+    const customPromptInput = document.getElementById('customPrompt');
     const contextLineRadiusInput = document.getElementById('contextLineRadius');
     const contextCharLimitInput = document.getElementById('contextCharLimit');
     const startBtn = document.getElementById('startBtn');
@@ -382,6 +398,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         if (document.activeElement !== apiEndpointInput) apiEndpointInput.value = settings.apiEndpoint || '';
         if (document.activeElement !== apiModelInput) apiModelInput.value = settings.apiModel || '';
         if (document.activeElement !== apiKeyInput) apiKeyInput.value = settings.apiKey || '';
+        if (document.activeElement !== customPromptInput) customPromptInput.value = settings.customPrompt || '';
         if (document.activeElement !== contextLineRadiusInput) contextLineRadiusInput.value = settings.contextLineRadius || 20;
         if (document.activeElement !== contextCharLimitInput) contextCharLimitInput.value = settings.contextCharLimit || 2000;
         
@@ -398,11 +415,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           document.querySelectorAll('.hint')[1].textContent = t.apiConfig.modelHint;
           document.querySelectorAll('label')[2].textContent = t.apiConfig.apiKey;
           document.querySelectorAll('.hint')[2].textContent = t.apiConfig.apiKeyHint;
+          document.querySelectorAll('label')[3].textContent = t.apiConfig.customPrompt;
+          document.querySelectorAll('.hint')[3].textContent = t.apiConfig.customPromptHint;
           document.querySelectorAll('.section h2')[2].textContent = t.contextSettings.title;
-          document.querySelectorAll('label')[3].textContent = t.contextSettings.lineRadius;
-          document.querySelectorAll('.hint')[3].textContent = t.contextSettings.lineRadiusHint;
-          document.querySelectorAll('label')[4].textContent = t.contextSettings.charLimit;
-          document.querySelectorAll('.hint')[4].textContent = t.contextSettings.charLimitHint;
+          document.querySelectorAll('label')[4].textContent = t.contextSettings.lineRadius;
+          document.querySelectorAll('.hint')[4].textContent = t.contextSettings.lineRadiusHint;
+          document.querySelectorAll('label')[5].textContent = t.contextSettings.charLimit;
+          document.querySelectorAll('.hint')[5].textContent = t.contextSettings.charLimitHint;
           document.querySelector('.help-title').textContent = t.helpFeedback.title;
           document.getElementById('viewSourceLink').querySelector('.link-text').textContent = t.helpFeedback.viewSource;
           document.getElementById('documentationLink').querySelector('.link-text').textContent = t.helpFeedback.documentation;
@@ -423,6 +442,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           apiEndpoint: apiEndpointInput.value,
           apiModel: apiModelInput.value,
           apiKey: apiKeyInput.value,
+          customPrompt: customPromptInput.value,
           contextLineRadius: contextLineRadiusInput.value,
           contextCharLimit: contextCharLimitInput.value
         }
@@ -433,6 +453,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     apiEndpointInput.addEventListener('change', autoSave);
     apiModelInput.addEventListener('change', autoSave);
     apiKeyInput.addEventListener('change', autoSave);
+    customPromptInput.addEventListener('change', autoSave);
     contextLineRadiusInput.addEventListener('change', autoSave);
     contextCharLimitInput.addEventListener('change', autoSave);
     

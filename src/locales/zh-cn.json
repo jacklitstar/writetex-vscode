@@ -14,7 +14,9 @@
         "model": "模型",
         "modelHint": "用于 OCR 的视觉模型（例如 gpt-4o）",
         "apiKey": "API 密钥",
-        "apiKeyHint": "以明文形式存储在 settings.json 中"
+        "apiKeyHint": "以明文形式存储在 settings.json 中",
+        "customPrompt": "自定义指令",
+        "customPromptHint": "附加到系统提示词"
     },
     "contextSettings": {
         "title": "上下文设置",

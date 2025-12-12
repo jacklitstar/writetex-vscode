@@ -14,7 +14,9 @@
         "model": "Modello",
         "modelHint": "Modello vision per OCR (es. gpt-4o)",
         "apiKey": "Chiave API",
-        "apiKeyHint": "Memorizzata in testo semplice in settings.json"
+        "apiKeyHint": "Memorizzata in testo semplice in settings.json",
+        "customPrompt": "Istruzioni personalizzate",
+        "customPromptHint": "Aggiungi al prompt di sistema"
     },
     "contextSettings": {
         "title": "Impostazioni Contesto",

@@ -82,6 +82,11 @@
           "type": "string",
           "default": "",
           "markdownDescription": "API key for the OpenAI-compatible service. **Warning**: Stored in plaintext in settings.json"
+        },
+        "writetex.customPrompt": {
+          "type": "string",
+          "default": "",
+          "description": "Custom instructions to append to the system prompt."
         }
       }
     }

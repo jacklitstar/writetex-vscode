@@ -14,7 +14,9 @@
         "model": "Modèle",
         "modelHint": "Modèle de vision pour OCR (ex. gpt-4o)",
         "apiKey": "Clé API",
-        "apiKeyHint": "Stockée en texte brut dans settings.json"
+        "apiKeyHint": "Stockée en texte brut dans settings.json",
+        "customPrompt": "Instructions personnalisées",
+        "customPromptHint": "Ajouter à l'invite du système"
     },
     "contextSettings": {
         "title": "Paramètres de Contexte",

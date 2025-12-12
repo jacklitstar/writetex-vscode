@@ -14,7 +14,9 @@
         "model": "モデル",
         "modelHint": "OCR 用のビジョンモデル（例：gpt-4o）",
         "apiKey": "API キー",
-        "apiKeyHint": "settings.json に平文で保存されます"
+        "apiKeyHint": "settings.json に平文で保存されます",
+        "customPrompt": "カスタム指示",
+        "customPromptHint": "システムプロンプトに追加"
     },
     "contextSettings": {
         "title": "コンテキスト設定",
