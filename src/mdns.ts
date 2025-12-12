@@ -105,9 +105,13 @@ function advertiseWindows(port: number): MdnsHandle {
 
   if (addresses.length === 0) {
     console.warn('[mDNS] No active IPv4 interfaces found, using default binding');
-    const mdns = multicastDns({ interface: '0.0.0.0' });
-    mdnsInstances.push(mdns);
-    setupMdnsResponder(mdns, serviceName, serviceType, fqdn, port);
+    try {
+      const mdns = multicastDns({ interface: '0.0.0.0' });
+      mdnsInstances.push(mdns);
+      setupMdnsResponder(mdns, serviceName, serviceType, fqdn, port);
+    } catch (e: any) {
+      console.error('[mDNS] Failed to bind to 0.0.0.0:', e);
+    }
   } else {
     console.log(`[mDNS] Windows binding to ${addresses.length} network interface(s):`, addresses);
 

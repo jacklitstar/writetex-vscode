@@ -22,40 +22,49 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     context: vscode.WebviewViewResolveContext,
     _token: vscode.CancellationToken
   ) {
-    this._view = webviewView;
+    try {
+      this._view = webviewView;
 
-    webviewView.webview.options = {
-      enableScripts: true,
-      localResourceRoots: [this._extensionUri]
-    };
+      webviewView.webview.options = {
+        enableScripts: true,
+        localResourceRoots: [this._extensionUri]
+      };
 
-    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+      webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    // Handle messages from the webview
-    webviewView.webview.onDidReceiveMessage(async (data) => {
-      switch (data.type) {
-        case 'saveSettings':
-          await this._saveSettings(data.settings);
-          break;
-        case 'startServer':
-          await this._startServerCallback();
-          this.setServerStatus(true);
-          break;
-        case 'stopServer':
-          await this._stopServerCallback();
-          this.setServerStatus(false);
-          break;
-        case 'getSettings':
-          this._updateWebview();
-          break;
-        case 'openExternal':
-          vscode.env.openExternal(vscode.Uri.parse(data.url));
-          break;
-      }
-    });
+      // Handle messages from the webview
+      webviewView.webview.onDidReceiveMessage(async (data) => {
+        try {
+          switch (data.type) {
+            case 'saveSettings':
+              await this._saveSettings(data.settings);
+              break;
+            case 'startServer':
+              await this._startServerCallback();
+              this.setServerStatus(true);
+              break;
+            case 'stopServer':
+              await this._stopServerCallback();
+              this.setServerStatus(false);
+              break;
+            case 'getSettings':
+              this._updateWebview();
+              break;
+            case 'openExternal':
+              vscode.env.openExternal(vscode.Uri.parse(data.url));
+              break;
+          }
+        } catch (error: any) {
+          console.error('Error handling webview message:', error);
+          vscode.window.showErrorMessage(`WriteTex sidebar error: ${error.message}`);
+        }
+      });
 
-    // Send initial data
-    this._updateWebview();
+      // Send initial data
+      this._updateWebview();
+    } catch (error: any) {
+      console.error('Error resolving webview view:', error);
+    }
   }
 
   private async _saveSettings(settings: any) {

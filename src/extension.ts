@@ -14,7 +14,12 @@ let sidebarProvider: SidebarProvider | null = null;
 const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto', 'ipynb'];
 
 function updateStatusBar() {
-  if (!statusItem) return
+  if (!statusItem) { return; }
+  // Only show status bar if server is running
+  if (!controller) {
+    statusItem.hide();
+    return;
+  }
   const ed = vscode.window.activeTextEditor
   const ok = ed && SUPPORTED_LANGS.includes(ed.document.languageId)
   if (ok) {
@@ -36,37 +41,55 @@ function getSettings(): WriteTexSettings {
 }
 
 async function start(context: vscode.ExtensionContext) {
-  const settings = getSettings()
-  if (controller) return
-  if (!statusItem) {
-    statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right)
-    statusItem.text = 'WriteTex'
-    statusItem.command = 'writetex.showCommands'
-  } else {
-    statusItem.text = 'WriteTex'
-    statusItem.command = 'writetex.showCommands'
-  }
-  // Validate API configuration
-  if (!settings.apiKey || settings.apiKey.trim() === '') {
-    const i18n = getI18n();
-    vscode.window.showWarningMessage(i18n.t().warnings.apiKeyNotConfigured);
-  }
-  const port = 50905;
-  const srv = startServer(context, settings, port);
-  controller = srv.controller;
-  mdns = advertise(port);
-  updateStatusBar();
+  try {
+    const settings = getSettings()
+    if (controller) { return; }
 
-  // Notify sidebar
-  if (sidebarProvider) {
-    sidebarProvider.setServerStatus(true);
+    // Ensure status item is configured (it's created in activate)
+    if (statusItem) {
+      statusItem.text = 'WriteTex';
+      statusItem.command = 'writetex.showCommands';
+    }
+
+    // Validate API configuration
+    if (!settings.apiKey || settings.apiKey.trim() === '') {
+      const i18n = getI18n();
+      vscode.window.showWarningMessage(i18n.t().warnings.apiKeyNotConfigured);
+    }
+    const port = 50905;
+    try {
+      const srv = startServer(context, settings, port);
+      controller = srv.controller;
+    } catch (err: any) {
+      console.error('Failed to start server:', err);
+      vscode.window.showErrorMessage(`WriteTex Server failed to start: ${err.message}`);
+    }
+
+    try {
+      mdns = advertise(port);
+    } catch (err: any) {
+      console.error('Failed to start mDNS:', err);
+      // mDNS failure shouldn't be fatal, but good to know
+      console.warn('WriteTex mDNS advertisement failed, iOS app might not find VSCode automatically.');
+    }
+
+    updateStatusBar();
+
+    // Notify sidebar
+    if (sidebarProvider) {
+      sidebarProvider.setServerStatus(true);
+    }
+  } catch (error: any) {
+    console.error('Critical error during WriteTex startup:', error);
+    vscode.window.showErrorMessage(`WriteTex extension failed to start: ${error.message}`);
   }
 }
 
 async function stop() {
   if (controller) { await controller.stop(); controller = null; }
   if (mdns) { await mdns.stop(); mdns = null; }
-  if (statusItem) { statusItem.hide(); }
+
+  updateStatusBar();
 
   // Notify sidebar
   if (sidebarProvider) {
@@ -80,6 +103,12 @@ export function activate(context: vscode.ExtensionContext) {
   // Initialize i18n
   initI18n(context.extensionPath);
   const i18n = getI18n();
+
+  // Create status bar item
+  statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+  statusItem.text = 'WriteTex';
+  statusItem.command = 'writetex.showCommands';
+  context.subscriptions.push(statusItem);
 
   // Register sidebar provider
   sidebarProvider = new SidebarProvider(
@@ -95,7 +124,6 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  start(context);
   const startCmd = vscode.commands.registerCommand('writetex.startServer', () => start(context));
   const stopCmd = vscode.commands.registerCommand('writetex.stopServer', () => stop());
   const showCmd = vscode.commands.registerCommand('writetex.showCommands', async () => {
@@ -109,7 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
       await vscode.commands.executeCommand(sel.value);
     }
   });
-  if (statusItem) context.subscriptions.push(statusItem);
+
   context.subscriptions.push(startCmd, stopCmd, showCmd);
   context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => updateStatusBar()));
 }
