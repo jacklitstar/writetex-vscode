@@ -78,7 +78,16 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       await config.update('contextLineRadius', parseInt(settings.contextLineRadius), vscode.ConfigurationTarget.Global);
       await config.update('contextCharLimit', parseInt(settings.contextCharLimit), vscode.ConfigurationTarget.Global);
 
-      vscode.window.showInformationMessage(i18n.t().actions.saveSuccess);
+      if (this._serverRunning) {
+        await this._stopServerCallback();
+        await this._startServerCallback();
+        this.setServerStatus(true);
+        vscode.window.showInformationMessage(i18n.t().actions.settingsSavedAndRestarted || "Settings saved and server restarted");
+      } // else {
+      // Optional: show a less intrusive message or nothing for auto-save
+      // vscode.window.showInformationMessage(i18n.t().actions.saveSuccess);
+      // }
+
       this._updateWebview();
     } catch (error: any) {
       vscode.window.showErrorMessage(i18n.format(i18n.t().actions.saveFailed, error.message));
@@ -336,8 +345,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     </div>
   </div>
 
-  <button id="saveBtn">Save Settings</button>
-
   <div class="help-section">
     <div class="help-title">Help & Feedback</div>
     <div class="link-list">
@@ -359,7 +366,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const apiKeyInput = document.getElementById('apiKey');
     const contextLineRadiusInput = document.getElementById('contextLineRadius');
     const contextCharLimitInput = document.getElementById('contextCharLimit');
-    const saveBtn = document.getElementById('saveBtn');
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
     const statusIndicator = document.getElementById('statusIndicator');
@@ -373,11 +379,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         const t = message.translations;
         
         // Update form values
-        apiEndpointInput.value = settings.apiEndpoint || '';
-        apiModelInput.value = settings.apiModel || '';
-        apiKeyInput.value = settings.apiKey || '';
-        contextLineRadiusInput.value = settings.contextLineRadius || 20;
-        contextCharLimitInput.value = settings.contextCharLimit || 2000;
+        if (document.activeElement !== apiEndpointInput) apiEndpointInput.value = settings.apiEndpoint || '';
+        if (document.activeElement !== apiModelInput) apiModelInput.value = settings.apiModel || '';
+        if (document.activeElement !== apiKeyInput) apiKeyInput.value = settings.apiKey || '';
+        if (document.activeElement !== contextLineRadiusInput) contextLineRadiusInput.value = settings.contextLineRadius || 20;
+        if (document.activeElement !== contextCharLimitInput) contextCharLimitInput.value = settings.contextCharLimit || 2000;
         
         // Update UI text
         if (t) {
@@ -397,7 +403,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           document.querySelectorAll('.hint')[3].textContent = t.contextSettings.lineRadiusHint;
           document.querySelectorAll('label')[4].textContent = t.contextSettings.charLimit;
           document.querySelectorAll('.hint')[4].textContent = t.contextSettings.charLimitHint;
-          saveBtn.textContent = t.actions.saveButton;
           document.querySelector('.help-title').textContent = t.helpFeedback.title;
           document.getElementById('viewSourceLink').querySelector('.link-text').textContent = t.helpFeedback.viewSource;
           document.getElementById('documentationLink').querySelector('.link-text').textContent = t.helpFeedback.documentation;
@@ -410,9 +415,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         stopBtn.disabled = !running;
       }
     });
-    
-    // Save settings
-    saveBtn.addEventListener('click', () => {
+
+    const autoSave = () => {
       vscode.postMessage({
         type: 'saveSettings',
         settings: {
@@ -423,7 +427,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           contextCharLimit: contextCharLimitInput.value
         }
       });
-    });
+    };
+    
+    // Auto-save on change
+    apiEndpointInput.addEventListener('change', autoSave);
+    apiModelInput.addEventListener('change', autoSave);
+    apiKeyInput.addEventListener('change', autoSave);
+    contextLineRadiusInput.addEventListener('change', autoSave);
+    contextCharLimitInput.addEventListener('change', autoSave);
     
     // Start server
     startBtn.addEventListener('click', () => {

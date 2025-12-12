@@ -31,6 +31,7 @@ export interface Translations {
         saveButton: string;
         saveSuccess: string;
         saveFailed: string;
+        settingsSavedAndRestarted: string;
     };
     commands: {
         startServer: string;
@@ -134,7 +135,8 @@ class I18n {
             actions: {
                 saveButton: 'Save Settings',
                 saveSuccess: 'WriteTex settings saved successfully!',
-                saveFailed: 'Failed to save settings: {0}'
+                saveFailed: 'Failed to save settings: {0}',
+                settingsSavedAndRestarted: 'WriteTex settings saved and server restarted!'
             },
             commands: {
                 startServer: 'WriteTex: Start OCR Server',

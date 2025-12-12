@@ -33,17 +33,8 @@ export function injectContext(messages: OpenAIMessage[]): OpenAIMessage[] {
 
     // Build context instruction
     const marker = '<<<User Cursor Here>>>';
-    const contextInstruction = `You are an OCR expert for LaTeX/TikZ/Markdown. The user is working in their code editor at the following location:
-
-File: ${context.file}
-Language: ${context.languageId}
-
-Surrounding context (cursor marked with '${marker}'):
---------------------
-${context.surroundingText}
---------------------
-
-Your ouput will be placed at the user's cursor. When extracting content from images, return ONLY the exact code necessary. No commentary, no explanations, no prose, no code blocks. Prefer formatting consistent with the provided editor context. Do not include preamble/packages. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper.`;
+    const contextInstruction = `You are an OCR expert for LaTeX/TikZ/Markdown. The user is working in their code editor with file: ${context.file}. Your ouput will be placed at the user's cursor. When extracting content from images, return ONLY the exact code necessary. No commentary, no explanations, no prose, no code blocks. Prefer formatting consistent with the provided editor context. Do not include preamble/packages. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper. If a variable is ambiguous, match the sorrounding context. \n Surrounding Context:---------------\n
+${context.surroundingText};\n---------------`;
 
     // Inject context as the first system message
     const contextMessage: OpenAIMessage = {
@@ -51,7 +42,19 @@ Your ouput will be placed at the user's cursor. When extracting content from ima
         content: contextInstruction
     };
 
-    return [contextMessage, ...messages];
+    // Filter out text from user messages if they contain images
+    const processedMessages = messages.map(msg => {
+        if (msg.role === 'user' && Array.isArray(msg.content) && msg.content.some(part => part.type === 'image_url')) {
+            return {
+                ...msg,
+                content: msg.content.filter(part => part.type === 'image_url')
+            };
+        }
+        return msg;
+    });
+
+    console.log(contextMessage);
+    return [contextMessage, ...processedMessages];
 }
 
 /**
@@ -64,6 +67,6 @@ export function transformRequest(proxyReq: ProxyRequest, settings: WriteTexSetti
         model: settings.apiModel, // Use configured model
         messages: messagesWithContext,
         stream: proxyReq.stream !== false, // Default to streaming
-        max_tokens: proxyReq.max_tokens || 2000
+        max_tokens: proxyReq.max_tokens || 10000
     };
 }
