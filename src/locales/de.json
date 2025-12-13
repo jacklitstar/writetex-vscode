@@ -1,0 +1,49 @@
+{
+    "serverControl": {
+        "title": "Serversteuerung",
+        "statusRunning": "Server läuft",
+        "statusStopped": "Server gestoppt",
+        "statusChecking": "Überprüfung läuft...",
+        "startButton": "Server starten",
+        "stopButton": "Server stoppen"
+    },
+    "apiConfig": {
+        "title": "KI-API-Konfiguration",
+        "endpoint": "API-Endpunkt",
+        "endpointHint": "Basis-URL für OpenAI-kompatible API",
+        "model": "Modell",
+        "modelHint": "Vision-Modell für OCR (z.B. gpt-4o)",
+        "apiKey": "API-Schlüssel",
+        "apiKeyHint": "Wird als Klartext in settings.json gespeichert",
+        "customPrompt": "Benutzerdefinierte Anweisungen",
+        "customPromptHint": "An die Systemaufforderung anhängen"
+    },
+    "contextSettings": {
+        "title": "Kontexteinstellungen",
+        "lineRadius": "Kontextzeilen-Radius",
+        "lineRadiusHint": "Kontextzeilen vor/nach dem Cursor",
+        "charLimit": "Kontextzeichen-Limit",
+        "charLimitHint": "Maximale Anzahl von Kontextzeichen"
+    },
+    "actions": {
+        "saveButton": "Einstellungen Speichern",
+        "saveSuccess": "WriteTex-Einstellungen erfolgreich gespeichert!",
+        "saveFailed": "Fehler beim Speichern der Einstellungen: {0}"
+    },
+    "commands": {
+        "startServer": "WriteTex: OCR-Server starten",
+        "stopServer": "WriteTex: OCR-Server stoppen",
+        "showActions": "WriteTex: Aktionen anzeigen",
+        "startServerLabel": "OCR-Server starten",
+        "stopServerLabel": "OCR-Server stoppen",
+        "actionsPlaceholder": "WriteTex-Aktionen"
+    },
+    "warnings": {
+        "apiKeyNotConfigured": "WriteTex: API-Schlüssel nicht konfiguriert. Bitte setzen Sie writetex.apiKey in den Einstellungen."
+    },
+    "helpFeedback": {
+        "title": "Hilfe & Feedback",
+        "viewSource": "Quelle Anzeigen",
+        "documentation": "Dokumentation"
+    }
+}

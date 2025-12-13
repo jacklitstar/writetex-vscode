@@ -1,0 +1,11 @@
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+vscode-docs
+test
+.vscode
+.trae
+.source
+*.vsix
