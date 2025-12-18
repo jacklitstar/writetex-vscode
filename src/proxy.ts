@@ -33,7 +33,7 @@ export function injectContext(messages: OpenAIMessage[], customPrompt?: string):
 
     // Build context instruction
     const marker = '<<<User Cursor Here>>>';
-    let contextInstruction = `You are an OCR expert for LaTeX/TikZ/Markdown. The user is working in their code editor with file: ${context.file}. Your ouput will be placed at the user's cursor. When extracting content from images, return ONLY the exact code necessary. Prefer formatting consistent with the provided editor context. Do not include preamble/packages. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper. If a variable is ambiguous, match the sorrounding context. \n Surrounding Context:---------------\n
+    let contextInstruction = `You are an OCR expert for LaTeX/TikZ/Markdown/Typst. The user is working in their code editor with file: ${context.file}. Your ouput will be placed at the user's cursor. When extracting content from images, return ONLY the exact code necessary. Prefer formatting consistent with the provided editor context. Do not include preamble/packages. If TikZ content is detected, output ONLY the body unless the context indicates the absence of a tikzpicture wrapper. If a variable is ambiguous, match the sorrounding context. \n Surrounding Context:---------------\n
 ${context.surroundingText};\n---------------No commentary, no explanations, no prose, no code blocks. If the context is not relevant to the image, perform a simple OCR. `;
 
     if (customPrompt) {

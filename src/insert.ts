@@ -13,7 +13,7 @@ export async function insertOrClipboard(resultText: string, ctx: ContextSummary)
     return { inserted: false }
   }
   const languageId = editor.document.languageId
-  const supported = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto']
+  const supported = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto', 'typst', 'ipynb']
   if (!supported.includes(languageId)) {
     await vscode.env.clipboard.writeText(resultText)
     return { inserted: false }

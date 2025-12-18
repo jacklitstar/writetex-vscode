@@ -1,14 +1,14 @@
 {
   "name": "writetex-vscode",
   "displayName": "WriteTex",
-  "description": "Write LaTeX with AI powered OCR",
+  "description": "Write LaTeX/Typst with AI powered OCR",
   "publisher": "WriteTex",
   "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/jacklitstar/writetex-vscode.git"
   },
-  "version": "0.0.6",
+  "version": "0.0.7",
   "engines": {
     "vscode": "^1.80.0"
   },

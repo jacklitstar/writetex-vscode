@@ -11,7 +11,7 @@ let controller: { stop: () => Promise<void> } | null = null;
 let mdns: MdnsHandle | null = null;
 let statusItem: vscode.StatusBarItem | null = null;
 let sidebarProvider: SidebarProvider | null = null;
-const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto', 'ipynb'];
+const SUPPORTED_LANGS = ['latex', 'tex', 'markdown', 'rmarkdown', 'quarto', 'ipynb', 'typst'];
 
 function updateStatusBar() {
   if (!statusItem) { return; }

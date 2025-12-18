@@ -1,6 +1,6 @@
 # WriteTex for VSCode
 
-[![Version](https://img.shields.io/badge/version-0.0.6-blue.svg)](https://github.com/jacklitstar/writetex-vscode)
+[![Version](https://img.shields.io/badge/version-0.0.7-blue.svg)](https://github.com/jacklitstar/writetex-vscode)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 WriteTex is a tablet/ipad app that converts handwritten math to LaTeX. Checkout our [website](https://www.writetex.com) for more information.
@@ -27,6 +27,7 @@ This extension allows users to use WriteTex in Visual Studio Code. It seamlessly
 
 ### 🎯 Supported File Types
 - LaTeX (`.tex`, `.latex`)
+- Typst (`.typ`)
 - Markdown (`.md`, `.markdown`)
 - R Markdown (`.rmd`)
 - Quarto (`.qmd`)
