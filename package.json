@@ -8,9 +8,9 @@
     "type": "git",
     "url": "https://github.com/jacklitstar/writetex-vscode.git"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
-    "vscode": "^1.104.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
@@ -107,7 +107,7 @@
     "@types/mocha": "^10.0.10",
     "@types/multicast-dns": "^7.2.4",
     "@types/node": "22.x",
-    "@types/vscode": "^1.104.0",
+    "@types/vscode": "^1.80.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.39.1",
