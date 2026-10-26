@@ -98,7 +98,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && xcopy /E /I /Y src\\locales out\\locales",
+    "compile": "tsc -p ./ && node -e \"require('fs').cpSync('src/locales', 'out/locales', { recursive: true })\"",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
