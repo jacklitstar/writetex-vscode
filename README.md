@@ -86,6 +86,20 @@ All settings can be configured through the sidebar UI or VSCode settings:
 | `writetex.apiKey` | `""` | API key (⚠️ stored in plaintext) |
 | `writetex.contextLineRadius` | `20` | Lines of context around cursor |
 | `writetex.contextCharLimit` | `2000` | Maximum context characters |
+| `writetex.customPrompt` | `""` | Custom instructions appended to the system prompt |
+| `writetex.extraBody` | `{}` | Extra JSON fields merged into every API request |
+
+### Extra request fields
+
+`writetex.extraBody` passes provider-specific options that the settings above don't cover. It is set in `settings.json` (it is not in the sidebar), and the server must be restarted after changing it. `model`, `messages` and `stream` always come from WriteTex; `max_tokens` can be overridden.
+
+For example, to turn off reasoning on a Qwen3-style model served by llama.cpp, vLLM or SGLang, which makes recognition much faster:
+```json
+{
+  "writetex.extraBody": { "chat_template_kwargs": { "enable_thinking": false } }
+}
+```
+On APIs that support it, `{ "reasoning_effort": "low" }` does the same job.
 
 ## 🔧 Architecture
 
@@ -157,11 +171,6 @@ OpenAI-compatible chat completions endpoint. Send image data as base64 in the me
 ```bash
 git clone https://github.com/jacklitstar/writetex-vscode.git
 cd writetex-vscode
-```
-
-For Mac and Linux devices, change line 85 of `package.json` to
-```
-    "compile": "tsc -p ./ && cp -R src/locales out/locales",
 ```
 
 ### Build

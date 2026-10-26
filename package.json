@@ -87,13 +87,18 @@
           "type": "string",
           "default": "",
           "description": "Custom instructions to append to the system prompt."
+        },
+        "writetex.extraBody": {
+          "type": "object",
+          "default": {},
+          "markdownDescription": "Extra JSON fields merged into every request sent to the API, e.g. `{\"chat_template_kwargs\": {\"enable_thinking\": false}}` to turn off reasoning on llama.cpp/vLLM Qwen-style models. Restart the server after changing it."
         }
       }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && xcopy /E /I /Y src\\locales out\\locales",
+    "compile": "tsc -p ./ && node -e \"require('fs').cpSync('src/locales', 'out/locales', { recursive: true })\"",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",

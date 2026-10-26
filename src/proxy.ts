@@ -68,9 +68,10 @@ export function transformRequest(proxyReq: ProxyRequest, settings: WriteTexSetti
     const messagesWithContext = injectContext(proxyReq.messages, settings.customPrompt);
 
     return {
+        ...settings.extraBody, // e.g. chat_template_kwargs; may override max_tokens
         model: settings.apiModel, // Use configured model
         messages: messagesWithContext,
         stream: proxyReq.stream !== false, // Default to streaming
-        max_tokens: proxyReq.max_tokens || 10000
+        max_tokens: (settings.extraBody?.max_tokens as number | undefined) || proxyReq.max_tokens || 10000
     };
 }
