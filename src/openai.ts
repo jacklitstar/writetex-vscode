@@ -11,6 +11,7 @@ export interface OpenAIRequest {
     messages: OpenAIMessage[];
     stream: boolean;
     max_tokens?: number;
+    [key: string]: unknown; // Extra fields from writetex.extraBody
 }
 
 export interface OpenAIStreamChunk {

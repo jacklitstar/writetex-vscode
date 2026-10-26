@@ -18,6 +18,7 @@ export interface WriteTexSettings {
   apiModel: string;
   apiKey: string;
   customPrompt?: string;
+  extraBody?: Record<string, unknown>;
 }
 
 export type OcrHandler = (body: OcrRequestBody) => Promise<OcrResponseBody>

@@ -37,7 +37,8 @@ function getSettings(): WriteTexSettings {
     apiEndpoint: cfg.get<string>('apiEndpoint', 'https://api.openai.com/v1'),
     apiModel: cfg.get<string>('apiModel', 'gpt-4o'),
     apiKey: cfg.get<string>('apiKey', ''),
-    customPrompt: cfg.get<string>('customPrompt', '')
+    customPrompt: cfg.get<string>('customPrompt', ''),
+    extraBody: cfg.get<Record<string, unknown>>('extraBody', {})
   };
 }
 
